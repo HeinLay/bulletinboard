@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    protected $namespace = 'App\Http\Controllers';
 
     /**
      * The controller namespace for the application.
@@ -33,6 +33,16 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
+
+    public function map()
+    {
+     $this->mapApiRoutes();
+
+     $this->mapWebRoutes();
+
+     //
+    }
+
     public function boot()
     {
         $this->configureRateLimiting();
@@ -59,5 +69,33 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60);
         });
+    }
+
+    protected function mapWebRoutes()
+    {
+      Route::group([
+        'middleware' => 'web',
+        'namespace'  => $this->namespace,
+      ], function ($router) {
+        require base_path('routes/web.php');
+      });
+    }
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapApiRoutes()
+    {
+      Route::group([
+        'middleware' => 'api',
+        'namespace'  => $this->namespace,
+        'prefix'     => 'api',
+      ], function ($router) {
+        require base_path('routes/api.php');
+      });
     }
 }

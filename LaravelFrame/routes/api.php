@@ -1,8 +1,4 @@
 <?php
-
-use Illuminate\Http\Request;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\PostController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,8 +9,10 @@ use App\Http\Controllers\PostController;
 | is assigned the 'api' middleware group. Enjoy building your API!
 |
 */
-// User routes
-Route::Post('register',[LoginController::class, 'register']);
-Route::Post('login',[LoginController::class, 'login']);
-// Post routes
+
+Route::post('/login', 'Auth\AuthController@authenticateByPassport');
+Route::post('/user/create','User\UserController@register');
+// Route::get('user/list', 'User\UserController@getUserList');
+Route::get('/user/list', 'User\UserController@getUserList');
 Route::Post('/post/create', [PostController::class, 'createPosts']);
+Route::Get('/post/list',[PostController::class,'index']);

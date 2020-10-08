@@ -7,6 +7,15 @@ use App\Post;
 
 class PostController extends Controller
 {
+  public function index()
+  {
+    $postList = $this->postInterface->getPostList();
+
+    return view('post.post', [
+      'postList' => $postList,
+    ]);
+  }
+  
   public function createPosts(Request $request)
   {
       $post = new Post();

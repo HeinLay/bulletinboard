@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use DB;
-use Laravel\Passport\Passport;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Log;
 
@@ -26,7 +25,6 @@ class AppServiceProvider extends ServiceProvider
   {
     $this->registerPolicies();
 
-    Passport::routes();
     // Debug log for SQL
     DB::listen(
       function ($sql) {
