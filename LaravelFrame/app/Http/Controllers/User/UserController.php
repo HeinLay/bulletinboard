@@ -22,8 +22,6 @@ class UserController extends Controller
    */
   public function __construct(UserServiceInterface $userInterface)
   {
-
-    $this->middleware('auth');
     $this->userInterface = $userInterface;
   }
 
@@ -34,41 +32,59 @@ class UserController extends Controller
    */
   public function getUserList()
   {
-    $userList = $this->userService->getUserList();
+    $userList = $this->userInterface->getUserList();
     return Response::json($userList);
   }
 
 
-  /**
-   * Create User
-   * @param
-   * @return
-   */
-   public function register(Request $request){
-
+/**
+ * Create User
+ * @param
+ * @return
+ */
+  public function register(Request $request){
     $validateData = $request->validate([
- 			'email'=>'email|required|unique:users',
- 			'name'=>'required|max:55',
- 			'password'=>'required'
- 		]);
+      'email'=>'email|required|unique:users',
+      'name'=>'required|max:55',
+      'password'=>'required'
+    ]);
 
-    $user = User::create($validateData);
+    $user=new User();
+    $user->email=$request->email;
+    $user->name=$request->name;
+    $user->email=$request->email;
+    $user->password=bcrypt($request->password);
+    $user->profile=$request->profile;
+    $user->type=$request->type;
+    $user->phone=$request->phone;
+    $user->address=$request->address;
+    $user->dob=$request->dob;
+    $user->create_user_id=$request->create_user_id;
+    $user->updated_user_id=$request->create_user_id;
+    $user->save();
 
     $accessToken = $user->createToken('authToken')->accessToken;
 
     return response(['user'=>$user, 'access_token'=>$accessToken]);
-    
- 		$user=new User();
- 		$user->email=$request->email;
- 		$user->name=$request->name;
- 		$user->email=$request->email;
- 		$user->password=bcrypt($request->password);
-    $user->profile=$request->profile;
-    $user->create_user_id=$request->create_user_id;
-    $user->updated_user_id=$request->create_user_id;
-    if($user->save()){
-      return response(['auth'=>json_decode((string) $response->getBody(), true),'user'=>$user]);
-    }
+  }
 
- 	}
+  public function show($id)
+  {
+    $user = User::find($id);
+    return $user;
+  }
+
+  public function update(Request $request, $id)
+  {
+    $user = User::find($id);
+    $user->update($request->only('name', 'email', 'profile', 'type', 'phone', 'address', 'dob'));
+    return $user;
+  }
+   
+  public function destroy($id)
+  {
+    $user = User::find($id);
+    $user->delete();
+    return ['status'=> "user has been deleted."]; 
+  }
 }
