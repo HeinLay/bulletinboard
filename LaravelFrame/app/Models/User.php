@@ -38,7 +38,7 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be cast to native types.
-     * Testing
+     * 
      * @var array
      */
     protected $casts = [
